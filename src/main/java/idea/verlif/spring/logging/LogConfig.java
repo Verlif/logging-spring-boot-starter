@@ -42,12 +42,18 @@ public class LogConfig {
     public void setLevel(String level) {
         this.level = level;
         for (String s : level.split(SPLIT)) {
+            String t = s.trim();
+            if (t.length() == 0) {
+                continue;
+            }
             try {
-                LogLevel l = LogLevel.valueOf(s.trim().toUpperCase(Locale.ROOT));
+                LogLevel l = LogLevel.valueOf(t.toUpperCase(Locale.ROOT));
                 allowedLevel.add(l);
             } catch (Exception ignored) {
-                LOGGER.warn("No such LogLevel at properties - " + s);
             }
+        }
+        if (allowedType.size() > 0) {
+            LOGGER.info("Log allowed level - " + allowedType);
         }
     }
 
@@ -71,13 +77,19 @@ public class LogConfig {
 
     public void setType(String type) {
         this.type = type;
-        for (String s : type.split(",")) {
+        for (String s : type.split(SPLIT)) {
+            String t = s.trim();
+            if (t.length() == 0) {
+                continue;
+            }
             try {
-                Class<?> cl = Class.forName(s.trim());
+                Class<?> cl = Class.forName(t);
                 allowedType.add(cl.getSimpleName());
             } catch (Exception ignored) {
-                LOGGER.warn("No such LogType at properties - " + s);
             }
+        }
+        if (allowedType.size() > 0) {
+            LOGGER.info("Log allowed type - " + allowedType);
         }
     }
 
