@@ -1,6 +1,5 @@
 package idea.verlif.spring.logging.api;
 
-import idea.verlif.spring.logging.LogConfig;
 import idea.verlif.spring.logging.LogService;
 import idea.verlif.spring.logging.api.impl.DefaultApiLogHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -26,14 +25,14 @@ import java.util.Map;
 @Aspect
 @Component
 @ConditionalOnProperty(prefix = "station.api-log", value = "enable", matchIfMissing = true)
-@Import(DefaultApiLogHandler.class)
+@Import({ApiLogConfig.class, DefaultApiLogHandler.class})
 public class ApiLogManager {
 
     @Autowired
     private LogService logService;
 
     @Autowired
-    private LogConfig logConfig;
+    private ApiLogConfig apiLogConfig;
 
     public final Map<Class<? extends ApiLogHandler>, ApiLogHandler> handlerMap;
 
@@ -56,8 +55,8 @@ public class ApiLogManager {
             logIt = method.getDeclaringClass().getAnnotation(LogIt.class);
         }
         // 记录过滤
-        if (logConfig.levelable(logIt.level())) {
-            if (logConfig.typeable(logIt.type())) {
+        if (apiLogConfig.levelable(logIt.level())) {
+            if (apiLogConfig.typeable(logIt.type())) {
                 ApiLogHandler handler = handlerMap.get(logIt.handler());
                 if (handler != null) {
                     handler.onLog(method, logIt);
