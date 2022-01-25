@@ -26,7 +26,7 @@
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>logging-spring-boot-starter</artifactId>
->            <version>2.6.1-beta0.1</version>
+>            <version>2.6.2-beta0.2</version>
 >        </dependency>
 >    </dependencies>
 > ```
