@@ -6,7 +6,7 @@
 
     <groupId>idea.verlif.spring</groupId>
     <artifactId>logging-spring-boot-starter</artifactId>
-    <version>2.6.6-1.0</version>
+    <version>2.6.6-1.1</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

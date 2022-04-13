@@ -99,7 +99,7 @@ public class DefaultApiLogHandler implements ApiLogHandler {
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>logging-spring-boot-starter</artifactId>
->            <version>2.6.6-1.0</version>
+>            <version>2.6.6-1.1</version>
 >        </dependency>
 >    </dependencies>
 > ```

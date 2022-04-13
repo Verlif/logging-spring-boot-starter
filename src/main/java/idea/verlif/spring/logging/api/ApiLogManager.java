@@ -49,7 +49,11 @@ public final class ApiLogManager {
                     poolInfo.getMax() / 2 + 1, poolInfo.getMax(),
                     30, TimeUnit.SECONDS,
                     new ArrayBlockingQueue<>(poolInfo.getLength()),
-                    r -> new Thread(r));
+                    r -> {
+                        Thread thread = new Thread(r);
+                        thread.setName("ApiLogThread-" + thread.getId());
+                        return thread;
+                    });
         } else {
             this.executor = null;
         }
