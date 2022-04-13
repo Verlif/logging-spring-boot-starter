@@ -16,15 +16,17 @@ public interface ApiLogHandler {
      *
      * @param method 标记的方法
      * @param logIt  标记的注解
+     * @param time   接口调用时间
      */
-    void onLog(Method method, LogIt logIt);
+    void onLog(Method method, LogIt logIt, long time);
 
     /**
      * 方法完成时
      *
      * @param method 标记的方法
      * @param logIt  标记的注解
-     * @param o 返回值
+     * @param time   接口完成时间
+     * @param o      返回值
      */
-    void onReturn(Method method, LogIt logIt, Object o);
+    void onReturn(Method method, LogIt logIt, Object o, long time);
 }

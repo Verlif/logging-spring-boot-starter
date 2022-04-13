@@ -62,13 +62,13 @@ public class DefaultApiLogHandler implements ApiLogHandler {
     private LogService logService;
 
     @Override
-    public void onLog(Method method, LogIt logIt) {
-        logService.log(logIt.level(), method.getName() + " >> " + logIt.message());
+    public void onLog(Method method, LogIt logIt, long time) {
+        logService.log(logIt.level(), method.getName() + " >> " + logIt.message() + " at " + time);
     }
 
     @Override
-    public void onReturn(Method method, LogIt logIt, Object o) {
-        logService.log(logIt.level(), method.getName() + " return >> " + o);
+    public void onReturn(Method method, LogIt logIt, Object o, long time) {
+        logService.log(logIt.level(), method.getName() + " return >> " + o + " at " + time);
     }
 
 }
@@ -99,7 +99,7 @@ public class DefaultApiLogHandler implements ApiLogHandler {
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>logging-spring-boot-starter</artifactId>
->            <version>2.6.6-0.3</version>
+>            <version>2.6.6-1.0</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -117,4 +117,12 @@ station:
     level: debug, info, warning, error
     # 当API日志功能开启后，允许的日志类型（短类名），使用英文,隔开。为空则允许全部
     type: Get, Post
+    # 日志线程信息
+    pool-info:
+       # 是否开启日志线程池（默认false）
+      enable: true
+      # 日志线程池最大线程数
+      max: 200
+      # 日志等待队列长度
+      length: 1000
 ```

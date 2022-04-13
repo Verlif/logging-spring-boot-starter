@@ -20,12 +20,12 @@ public class DefaultApiLogHandler implements ApiLogHandler {
     private LogService logService;
 
     @Override
-    public void onLog(Method method, LogIt logIt) {
+    public void onLog(Method method, LogIt logIt, long time) {
         logService.log(logIt.level(), method.getName() + " >> " + logIt.message());
     }
 
     @Override
-    public void onReturn(Method method, LogIt logIt, Object o) {
+    public void onReturn(Method method, LogIt logIt, Object o, long time) {
         logService.log(logIt.level(), method.getName() + " return >> " + o);
     }
 

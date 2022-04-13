@@ -31,12 +31,23 @@ public class ApiLogConfig {
      */
     private String type;
 
+    /**
+     * 允许的记录等级
+     */
     private final List<LogLevel> allowedLevel;
+
+    /**
+     * 允许的记录类型
+     */
     private final List<String> allowedType;
 
+    private final ThreadPoolInfo poolInfo;
+
     public ApiLogConfig() {
-        allowedLevel = new ArrayList<>();
-        allowedType = new ArrayList<>();
+        this.allowedLevel = new ArrayList<>();
+        this.allowedType = new ArrayList<>();
+
+        this.poolInfo = new ThreadPoolInfo();
     }
 
     public void setLevel(String level) {
@@ -99,4 +110,52 @@ public class ApiLogConfig {
         return this.type == null || allowedType.size() == 0 || allowedType.contains(type.getSimpleName());
     }
 
+    public ThreadPoolInfo getPoolInfo() {
+        return poolInfo;
+    }
+
+    /**
+     * 线程池信息
+     */
+    public static final class ThreadPoolInfo {
+
+        /**
+         * 是否采用线程池模式
+         */
+        private boolean enable = false;
+
+        /**
+         * 线程池最大值
+         */
+        private int max = 200;
+
+        /**
+         * 日志等待队列长度
+         */
+        private int length = 1000;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public int getMax() {
+            return max;
+        }
+
+        public void setMax(int max) {
+            this.max = max;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public void setLength(int length) {
+            this.length = length;
+        }
+    }
 }
