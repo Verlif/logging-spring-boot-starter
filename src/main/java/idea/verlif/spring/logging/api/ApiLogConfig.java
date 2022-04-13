@@ -1,15 +1,13 @@
 package idea.verlif.spring.logging.api;
 
 import idea.verlif.spring.logging.LogLevel;
-import idea.verlif.spring.logging.LogService;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Verlif
@@ -29,7 +27,7 @@ public class ApiLogConfig {
     private String level;
 
     /**
-     * 日志启用类型（全类名），使用英文,隔开
+     * 日志启用类型（短类名），使用英文,隔开
      */
     private String type;
 
@@ -84,11 +82,7 @@ public class ApiLogConfig {
             if (t.length() == 0) {
                 continue;
             }
-            try {
-                Class<?> cl = Class.forName(t);
-                allowedType.add(cl.getSimpleName());
-            } catch (Exception ignored) {
-            }
+            allowedType.add(t);
         }
         if (allowedType.size() > 0) {
             LOGGER.info("Api log allowed type - " + allowedType);

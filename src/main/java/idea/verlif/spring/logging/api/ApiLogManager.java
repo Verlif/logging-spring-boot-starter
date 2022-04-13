@@ -26,7 +26,7 @@ import java.util.Map;
 @Component
 @ConditionalOnProperty(prefix = "station.api-log", value = "enable", matchIfMissing = true)
 @Import({ApiLogConfig.class, DefaultApiLogHandler.class})
-public class ApiLogManager {
+public final class ApiLogManager {
 
     @Autowired
     private LogService logService;

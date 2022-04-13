@@ -23,7 +23,7 @@ public class LogConfig {
         return new DefaultLogService();
     }
 
-    private static class DefaultLogService implements LogService {
+    private static final class DefaultLogService implements LogService {
 
         public final Map<String, Logger> loggerMap;
 
@@ -71,8 +71,11 @@ public class LogConfig {
         }
 
         private Logger getLogger() {
+            // 获取当前线程的栈数据
             StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+            // 获取当前的调用类名
             String cl = elements[3].getClassName();
+            // 生成调用类对应的Logger
             Logger logger = loggerMap.get(cl);
             if (logger == null) {
                 logger = LoggerFactory.getLogger(cl);
