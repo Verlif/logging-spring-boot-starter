@@ -78,12 +78,17 @@ public final class ApiLogManager {
                     LogIt finalLogIt = logIt;
                     if (logIt.sync()) {
                         handler.onLog(method, finalLogIt, joinPoint.getArgs(), System.currentTimeMillis());
-                    } else {
+                    } else if (!logIt.order()) {
                         executor.execute(() -> handler.onLog(method, finalLogIt, joinPoint.getArgs(), System.currentTimeMillis()));
                     }
                     Object o = joinPoint.proceed();
                     if (logIt.sync()) {
                         handler.onReturn(method, finalLogIt, o, System.currentTimeMillis());
+                    } else if (logIt.order()) {
+                        executor.execute(() -> {
+                            handler.onLog(method, finalLogIt, joinPoint.getArgs(), System.currentTimeMillis());
+                            handler.onReturn(method, finalLogIt, o, System.currentTimeMillis());
+                        });
                     } else {
                         executor.execute(() -> handler.onReturn(method, finalLogIt, o, System.currentTimeMillis()));
                     }

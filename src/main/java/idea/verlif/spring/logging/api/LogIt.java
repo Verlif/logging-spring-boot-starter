@@ -40,6 +40,11 @@ public @interface LogIt {
     boolean sync() default true;
 
     /**
+     * 是否控制调用顺序
+     */
+    boolean order() default false;
+
+    /**
      * 日志处理类
      */
     Class<? extends ApiLogHandler> handler() default DefaultApiLogHandler.class;

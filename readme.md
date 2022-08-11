@@ -39,7 +39,8 @@ public final class MyLogService implements LogService {
 在`api`方法上或是`controller类`上标记`@LogIt`注解（方法上的注解优先于类上的注解），即可完成此接口访问或是其下所有接口的访问日志接入。  
 注解的必填项是`message`，可选项为
 * `type`（类型），用于区分日志类型
-* `sync`（同步模式），使用当前线程同步调用日志处理器方法。
+* `sync`（同步模式），使用当前线程同步调用日志处理器方法。默认`true`。
+* `order`（排序模式），同一个请求会再处理完`onLog`方法后再执行`onReturn`方法，仅在`sync`为`false`的情况下生效。默认`false`。
 * `handler`（日志处理器），用于选择日志处理方法
 
 ```java
@@ -102,7 +103,7 @@ maven
        <dependency>
            <groupId>com.github.Verlif</groupId>
            <artifactId>logging-spring-boot-starter</artifactId>
-           <version>2.6.6-2.0</version>
+           <version>2.6.6-2.1</version>
        </dependency>
    </dependencies>
 ```
