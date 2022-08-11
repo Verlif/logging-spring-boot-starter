@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Component
-@ConditionalOnProperty(prefix = "station.api-log", value = "enable", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "station.api-log", value = "enabled", matchIfMissing = true)
 @Import({ApiLogConfig.class, DefaultApiLogHandler.class})
 public final class ApiLogManager {
 
@@ -36,27 +36,23 @@ public final class ApiLogManager {
     private final ThreadPoolExecutor executor;
     private final Map<Class<? extends ApiLogHandler>, ApiLogHandler> handlerMap;
 
+    @Autowired
     public ApiLogManager(
-            @Autowired ApplicationContext context,
-            @Autowired LogService logService,
-            @Autowired ApiLogConfig config) {
+            ApplicationContext context,
+            LogService logService,
+            ApiLogConfig config) {
+        ApiLogConfig.ThreadPoolInfo poolInfo = config.getPoolInfo();
         this.logService = logService;
         this.apiLogConfig = config;
-        ApiLogConfig.ThreadPoolInfo poolInfo = config.getPoolInfo();
-        if (poolInfo.isEnable()) {
-            logService.info("Api log is using ThreadPool.");
-            this.executor = new ThreadPoolExecutor(
-                    poolInfo.getMax() / 2 + 1, poolInfo.getMax(),
-                    30, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(poolInfo.getLength()),
-                    r -> {
-                        Thread thread = new Thread(r);
-                        thread.setName("ApiLogThread-" + thread.getId());
-                        return thread;
-                    });
-        } else {
-            this.executor = null;
-        }
+        this.executor = new ThreadPoolExecutor(
+                poolInfo.getMax() / 2 + 1, poolInfo.getMax(),
+                30, TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(poolInfo.getLength()),
+                r -> {
+                    Thread thread = new Thread(r);
+                    thread.setName("ApiLogThread-" + thread.getId());
+                    return thread;
+                });
         this.handlerMap = new HashMap<>();
         Map<String, ApiLogHandler> map = context.getBeansOfType(ApiLogHandler.class);
         for (ApiLogHandler handler : map.values()) {
@@ -79,17 +75,16 @@ public final class ApiLogManager {
             if (apiLogConfig.typeable(logIt.type())) {
                 ApiLogHandler handler = handlerMap.get(logIt.handler());
                 if (handler != null) {
-                    if (executor == null) {
-                        handler.onLog(method, logIt, System.currentTimeMillis());
+                    LogIt finalLogIt = logIt;
+                    if (logIt.sync()) {
+                        handler.onLog(method, finalLogIt, joinPoint.getArgs(), System.currentTimeMillis());
                     } else {
-                        LogIt finalLogIt = logIt;
-                        executor.execute(() -> handler.onLog(method, finalLogIt, System.currentTimeMillis()));
+                        executor.execute(() -> handler.onLog(method, finalLogIt, joinPoint.getArgs(), System.currentTimeMillis()));
                     }
                     Object o = joinPoint.proceed();
-                    if (executor == null) {
-                        handler.onReturn(method, logIt, o, System.currentTimeMillis());
+                    if (logIt.sync()) {
+                        handler.onReturn(method, finalLogIt, o, System.currentTimeMillis());
                     } else {
-                        LogIt finalLogIt = logIt;
                         executor.execute(() -> handler.onReturn(method, finalLogIt, o, System.currentTimeMillis()));
                     }
                     return o;

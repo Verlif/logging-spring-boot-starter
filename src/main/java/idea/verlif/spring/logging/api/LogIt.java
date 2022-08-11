@@ -35,6 +35,11 @@ public @interface LogIt {
     LogLevel level() default LogLevel.INFO;
 
     /**
+     * 是否同步进行日志处理。默认同步
+     */
+    boolean sync() default true;
+
+    /**
      * 日志处理类
      */
     Class<? extends ApiLogHandler> handler() default DefaultApiLogHandler.class;

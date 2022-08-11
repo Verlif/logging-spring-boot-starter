@@ -39,6 +39,7 @@ public final class MyLogService implements LogService {
 在`api`方法上或是`controller类`上标记`@LogIt`注解（方法上的注解优先于类上的注解），即可完成此接口访问或是其下所有接口的访问日志接入。  
 注解的必填项是`message`，可选项为
 * `type`（类型），用于区分日志类型
+* `sync`（同步模式），使用当前线程同步调用日志处理器方法。
 * `handler`（日志处理器），用于选择日志处理方法
 
 ```java
@@ -61,11 +62,11 @@ public class DefaultApiLogHandler implements ApiLogHandler {
     @Autowired
     private LogService logService;
 
-    @Override
-    public void onLog(Method method, LogIt logIt, long time) {
-        logService.log(logIt.level(), method.getName() + " >> " + logIt.message() + " at " + time);
-    }
-
+   @Override
+   public void onLog(Method method, LogIt logIt, Object[] obs, long time) {
+      logService.log(logIt.level(), method.getName() + " >> " + logIt.message());
+   }
+   
     @Override
     public void onReturn(Method method, LogIt logIt, Object o, long time) {
         logService.log(logIt.level(), method.getName() + " return >> " + o + " at " + time);
@@ -81,28 +82,30 @@ public class DefaultApiLogHandler implements ApiLogHandler {
 
 1. 添加Jitpack仓库源
 
-> maven
-> ```xml
-> <repositories>
->    <repository>
->        <id>jitpack.io</id>
->        <url>https://jitpack.io</url>
->    </repository>
-> </repositories>
-> ```
+maven
+
+```xml
+<repositories>
+   <repository>
+       <id>jitpack.io</id>
+       <url>https://jitpack.io</url>
+   </repository>
+</repositories>
+```
 
 2. 添加依赖
 
-> maven
-> ```xml
->    <dependencies>
->        <dependency>
->            <groupId>com.github.Verlif</groupId>
->            <artifactId>logging-spring-boot-starter</artifactId>
->            <version>2.6.6-1.1</version>
->        </dependency>
->    </dependencies>
-> ```
+maven
+
+```xml
+   <dependencies>
+       <dependency>
+           <groupId>com.github.Verlif</groupId>
+           <artifactId>logging-spring-boot-starter</artifactId>
+           <version>2.6.6-2.0</version>
+       </dependency>
+   </dependencies>
+```
 
 ## 配置文件
 
@@ -112,15 +115,13 @@ station:
   # API日志配置
   api-log:
     # 是否开启API日志功能
-    enable: true
+    enabled: true
     # 当API日志功能开启后，允许的日志等级（与LogLevel枚举类对应），使用英文,隔开。为空则允许全部
     level: debug, info, warning, error
     # 当API日志功能开启后，允许的日志类型（短类名），使用英文,隔开。为空则允许全部
     type: Get, Post
     # 日志线程信息
     pool-info:
-       # 是否开启日志线程池（默认false）
-      enable: true
       # 日志线程池最大线程数
       max: 200
       # 日志等待队列长度

@@ -120,11 +120,6 @@ public class ApiLogConfig {
     public static final class ThreadPoolInfo {
 
         /**
-         * 是否采用线程池模式
-         */
-        private boolean enable = false;
-
-        /**
          * 线程池最大值
          */
         private int max = 200;
@@ -133,14 +128,6 @@ public class ApiLogConfig {
          * 日志等待队列长度
          */
         private int length = 1000;
-
-        public boolean isEnable() {
-            return enable;
-        }
-
-        public void setEnable(boolean enable) {
-            this.enable = enable;
-        }
 
         public int getMax() {
             return max;

@@ -16,9 +16,10 @@ public interface ApiLogHandler {
      *
      * @param method 标记的方法
      * @param logIt  标记的注解
+     * @param obs    传入参数
      * @param time   接口调用时间
      */
-    void onLog(Method method, LogIt logIt, long time);
+    void onLog(Method method, LogIt logIt, Object[] obs, long time);
 
     /**
      * 方法完成时

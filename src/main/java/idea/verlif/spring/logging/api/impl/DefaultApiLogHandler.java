@@ -1,11 +1,11 @@
 package idea.verlif.spring.logging.api.impl;
 
-import idea.verlif.spring.logging.api.LogIt;
 import idea.verlif.spring.logging.LogService;
 import idea.verlif.spring.logging.api.ApiLogHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import idea.verlif.spring.logging.api.LogIt;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
 
 /**
@@ -16,11 +16,11 @@ import java.lang.reflect.Method;
 @Component
 public class DefaultApiLogHandler implements ApiLogHandler {
 
-    @Autowired
+    @Resource
     private LogService logService;
 
     @Override
-    public void onLog(Method method, LogIt logIt, long time) {
+    public void onLog(Method method, LogIt logIt, Object[] obs, long time) {
         logService.log(logIt.level(), method.getName() + " >> " + logIt.message());
     }
 
